@@ -77,6 +77,53 @@ export default function DigestsTabContent() {
     setShowDigestContent(false);
   };
 
+  const handleDownloadDigest = (digest: DailyDigest, date: string) => {
+    const formatDate = (isoDate: string) => new Date(isoDate + 'T00:00:00').toLocaleDateString(undefined, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    let htmlContent = `<html><head><title>Digest for ${formatDate(date)}</title>`;
+    htmlContent += '<style>body { font-family: sans-serif; margin: 20px; } h1, h2, h3 { color: #333; } .paper, .theme, .outlier { margin-bottom: 20px; padding: 10px; border: 1px solid #eee; border-radius: 5px; } .label { font-weight: bold; } </style>';
+    htmlContent += `</head><body>`;
+    htmlContent += `<h1>Digest for ${formatDate(date)}</h1>`;
+    htmlContent += `<h2>Key Takeaway</h2><p>${digest.keyTakeaway}</p>`;
+
+    htmlContent += `<h2>Top Papers Today</h2>`;
+    digest.topPapers.forEach((paper, index) => {
+      htmlContent += `<div class="paper"><h3>#${index + 1}: ${paper.title}</h3>`;
+      htmlContent += `<p><span class="label">Abstract:</span> ${paper.abstract}</p>`;
+      htmlContent += `<p><span class="label">Why This Matters:</span> ${paper.significance}</p>`;
+      htmlContent += `<p><span class="label">Categories:</span> ${paper.categories.join(', ')}</p></div>`;
+    });
+
+    htmlContent += `<h2>Emerging Themes</h2>`;
+    digest.emergingThemes.forEach(theme => {
+      htmlContent += `<div class="theme"><h3>${theme.theme}</h3>`;
+      htmlContent += `<p>${theme.description}</p>`;
+      htmlContent += `<p><span class="label">Related Papers:</span> ${theme.relatedPaperIds.length}</p></div>`;
+    });
+
+    htmlContent += `<h2>Weird Flex</h2>`;
+    htmlContent += `<div class="outlier"><h3>${digest.outlierPick.paper.title}</h3>`;
+    htmlContent += `<p><span class="label">Abstract:</span> ${digest.outlierPick.paper.abstract}</p>`;
+    htmlContent += `<p><span class="label">Why It's Interesting:</span> ${digest.outlierPick.whyInteresting}</p></div>`;
+
+    htmlContent += `</body></html>`;
+
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `arxiv-digest-${date}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const renderPaperCard = (paper: PaperDigest, index?: number) => (
     <div key={paper.id} className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-4">
       <div className="flex justify-between items-start">
@@ -179,20 +226,39 @@ export default function DigestsTabContent() {
           {generatedDigests.map(({ date, digest }) => (
             <div
               key={date}
-              onClick={() => handleCardClick(date, digest)}
-              className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow"
+              className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 flex flex-col justify-between relative"
             >
-              <h3 className="text-lg font-semibold text-sky-700 dark:text-sky-400 mb-2">
-                Digest for {new Date(date + 'T00:00:00').toLocaleDateString(undefined, { 
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                {digest.keyTakeaway}
-              </p>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click event
+                  handleDownloadDigest(digest, date);
+                }}
+                title="Download Digest"
+                className="absolute top-4 right-4 p-2 text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+              <div>
+                <h3 
+                  onClick={() => handleCardClick(date, digest)}
+                  className="text-lg font-semibold text-sky-700 dark:text-sky-400 mb-2 cursor-pointer hover:underline pr-10"
+                >
+                  Digest for {new Date(date + 'T00:00:00').toLocaleDateString(undefined, { 
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </h3>
+                <p 
+                  onClick={() => handleCardClick(date, digest)}
+                  className="text-sm text-slate-600 dark:text-slate-300 mb-4 cursor-pointer"
+                >
+                  {digest.keyTakeaway}
+                </p>
+              </div>
             </div>
           ))}
         </div>
@@ -237,15 +303,13 @@ export default function DigestsTabContent() {
 
             <section>
               <h3 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-6">
-                Interesting Find of the Day
+                Weird Flex
               </h3>
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-1 rounded-lg">
-                <div className="bg-white dark:bg-slate-800 rounded-lg p-6">
-                  {renderPaperCard(digest.outlierPick.paper)}
-                  <div className="mt-4 bg-purple-50 dark:bg-purple-900/30 rounded p-4">
-                    <h4 className="font-semibold text-purple-800 dark:text-purple-300 mb-2">Why It&apos;s Interesting:</h4>
-                    <p className="text-slate-700 dark:text-slate-300">{digest.outlierPick.whyInteresting}</p>
-                  </div>
+              <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-md">
+                {renderPaperCard(digest.outlierPick.paper)}
+                <div className="mt-4 bg-sky-50 dark:bg-sky-900/30 rounded p-4">
+                  <h4 className="font-semibold text-sky-800 dark:text-sky-300 mb-2">Why It&apos;s Interesting:</h4>
+                  <p className="text-slate-700 dark:text-slate-300">{digest.outlierPick.whyInteresting}</p>
                 </div>
               </div>
             </section>

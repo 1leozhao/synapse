@@ -40,8 +40,8 @@ export interface DailyDigest {
   keyTakeaway: string; // A one-sentence summary of the day's most important development
 }
 
-const ARXIV_CATEGORIES_TO_FETCH = ['cs.AI', 'cs.LG', 'stat.ML']; // Renamed for clarity
-const MAX_PAPERS_PER_CATEGORY = 5; // Reduced for faster testing with OpenAI calls
+const ARXIV_CATEGORIES_TO_FETCH = ['cs.AI', 'cs.LG', 'stat.ML'];
+const MAX_PAPERS_PER_CATEGORY = 10;
 
 interface ArxivApiEntry {
   id: string;
