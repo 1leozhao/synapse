@@ -28,10 +28,9 @@ cd synapse
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-3. Install dependencies and start the development server:
+3. Run the setup script:
 ```bash
-npm install
-npm run dev
+./setup.sh
 ```
 
 The application will be available at `http://localhost:3000`.
