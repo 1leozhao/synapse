@@ -135,14 +135,14 @@ export async function generateFullPaperSummaryFromUrl(arxivUrl: string): Promise
   let paperText = '';
 
   try {
-    console.log(`Fetching full text for ${coreId} from ${arxivTxtUrl}`)
+    // console.log(`Fetching full text for ${coreId} from ${arxivTxtUrl}`)
     const response = await fetch(arxivTxtUrl);
     if (!response.ok) {
       throw new Error(`Failed to fetch paper text from ${arxivTxtUrl}: ${response.statusText}`);
     }
     paperText = await response.text();
     if (paperText.trim().length < 200) { // Arbitrary threshold for too short text
-        console.warn(`Fetched text for ${coreId} seems too short. Length: ${paperText.trim().length}`);
+        // console.warn(`Fetched text for ${coreId} seems too short. Length: ${paperText.trim().length}`);
         // return "Fetched paper text is too short to generate a meaningful summary.";
     }
   } catch (error) {
@@ -205,7 +205,7 @@ export async function getEmbeddingForText(text: string, cacheKey: string): Promi
     return embeddingCache.get(cacheKey)!;
   }
   if (!text || text.trim().length < 50) { // Avoid embedding very short or empty texts
-    console.warn("Text too short for embedding, cacheKey:", cacheKey);
+    // console.warn("Text too short for embedding, cacheKey:", cacheKey);
     return null;
   }
   try {
@@ -224,21 +224,6 @@ export async function getEmbeddingForText(text: string, cacheKey: string): Promi
     return null;
   }
 }
-
-// Helper for cosine similarity
-// export function cosineSimilarity(vecA: number[], vecB: number[]): number {
-//   if (!vecA || !vecB || vecA.length !== vecB.length) return 0;
-//   let dotProduct = 0;
-//   let normA = 0;
-//   let normB = 0;
-//   for (let i = 0; i < vecA.length; i++) {
-//     dotProduct += vecA[i] * vecB[i];
-//     normA += vecA[i] * vecA[i];
-//     normB += vecB[i] * vecB[i];
-//   }
-//   if (normA === 0 || normB === 0) return 0; // Avoid division by zero
-//   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-// } 
 
 function formatDate(dateString: string | undefined | null): string {
   if (!dateString) return new Date().toISOString().split('T')[0];
@@ -344,8 +329,8 @@ Remember: Only use paper IDs that were provided in the input above.`;
     const validPaperIds = new Set(papers.map(p => p.id));
     
     const validTopPapers = analysis.topPapers.filter((top: TopPaperAnalysis) => validPaperIds.has(top.id));
-    if (validTopPapers.length === 0 && analysis.topPapers.length > 0) { // only throw if AI returned some but none were valid
-      console.warn('AI returned top papers, but none had valid IDs matching input papers.');
+    if (validTopPapers.length === 0 && analysis.topPapers.length > 0) { 
+      // console.warn('AI returned top papers, but none had valid IDs matching input papers.');
       // Decide if this should be a hard error or if we proceed without top papers
       // For now, let's allow proceeding but it might be better to throw
     }
@@ -359,7 +344,7 @@ Remember: Only use paper IDs that were provided in the input above.`;
     let outlierReason = analysis.outlierPick.whyInteresting;
 
     if (!validPaperIds.has(analysis.outlierPick.paperId)) {
-      console.warn(`Outlier paper ID "${analysis.outlierPick.paperId}" not found in provided papers. Attempting to use the last paper as a fallback.`);
+      // console.warn(`Outlier paper ID "${analysis.outlierPick.paperId}" not found in provided papers. Attempting to use the last paper as a fallback.`);
       if (papers.length > 0) {
         outlierPaperId = papers[papers.length - 1].id;
         outlierReason = "This paper was selected as a fallback outlier as the original pick was not valid.";

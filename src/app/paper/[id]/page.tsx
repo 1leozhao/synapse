@@ -1,9 +1,9 @@
-import { fetchLatestPapers } from "@/lib/arxiv"; // We'll need a way to get a single paper
-import { generateFullPaperSummaryFromUrl, generatePaperCritique } from "@/lib/openai"; // Import the new function
-import { cosineSimilarity } from "@/lib/utils"; // Updated import path
+import { fetchLatestPapers } from "@/lib/arxiv";
+import { generateFullPaperSummaryFromUrl, generatePaperCritique } from "@/lib/openai";
+import { cosineSimilarity } from "@/lib/utils";
 import Link from "next/link";
-import CollapsibleSection from "@/components/CollapsibleSection"; // Import the new component
-import PaperChatBox from "@/components/PaperChatBox"; // Add this import
+import CollapsibleSection from "@/components/CollapsibleSection";
+import PaperChatBox from "@/components/PaperChatBox";
 
 interface Paper {
     id: string;

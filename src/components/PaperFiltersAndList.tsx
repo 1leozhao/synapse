@@ -4,20 +4,6 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Paper as ArxivPaper } from '@/lib/arxiv';
 import { useRouter } from 'next/navigation';
-// cosineSimilarity is no longer needed here as novelty is not calculated/displayed on cards
-// import { cosineSimilarity } from '@/lib/utils';
-
-// Removed PaperCardData interface, will use ArxivPaper directly
-
-// Removed empty PaperFiltersAndListProps interface, using props directly in function signature
-
-// getNoveltyScoreColor is no longer needed here
-// const getNoveltyScoreColor = (score: number | undefined): string => {
-//   if (score === undefined) return 'text-gray-500';
-//   if (score > 0.75) return 'text-green-600';
-//   if (score > 0.5) return 'text-yellow-600';
-//   return 'text-red-600';
-// };
 
 export default function PaperFiltersAndList({ papers, allCategories }: { papers: ArxivPaper[], allCategories: string[] }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,10 +11,6 @@ export default function PaperFiltersAndList({ papers, allCategories }: { papers:
   const [loadingPaperId, setLoadingPaperId] = useState<string | null>(null);
   const router = useRouter();
   
-  // The `papers` prop is used directly for filtering and display.
-  // No client-side novelty calculation needed here anymore.
-  // const [papersWithNovelty, setPapersWithNovelty] = useState<PaperCardData[]>(papers);
-
   const filteredAndSortedPapers = useMemo(() => {
     let tempPapers = [...papers]; // Use the `papers` prop directly
 

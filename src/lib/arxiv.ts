@@ -71,8 +71,6 @@ async function fetchPapersFromCategory(categoryToFetch: string): Promise<Paper[]
       sortOrder: 'descending',
     });
 
-    // console.log("Raw papersFromApi response for category:", categoryToFetch, JSON.stringify(papersFromApi, null, 2));
-
     if (!papersFromApi || papersFromApi.length === 0) {
       console.error(`No entries found for category: ${categoryToFetch}`);
       return [];
