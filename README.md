@@ -83,7 +83,6 @@ The Synapse Lite swarm operates through several coordinated AI agents:
 ## Technical Stack
 
 - **Frontend**: Next.js 15.3.2, React 19, TailwindCSS
-- **AI**: OpenAI GPT-4 Turbo (digests), GPT-3.5 Turbo (chat, summaries)
 - **APIs**: ArXiv, OpenAI
 - **Development**: TypeScript, ESLint, Turbopack
 
