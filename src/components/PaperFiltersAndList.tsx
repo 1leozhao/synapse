@@ -16,7 +16,9 @@ export default function PaperFiltersAndList({ papers, allCategories }: { papers:
 
     if (searchQuery) {
       tempPapers = tempPapers.filter(paper =>
-        paper.title.toLowerCase().includes(searchQuery.toLowerCase())
+        paper.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        paper.abstract.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        paper.authors?.some(author => author.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     }
 
@@ -43,7 +45,7 @@ export default function PaperFiltersAndList({ papers, allCategories }: { papers:
       <div className="flex flex-col sm:flex-row gap-4">
         <input
           type="text"
-          placeholder="Search papers by title..."
+          placeholder="Search by title, keyword, or author..."
           className="flex-grow p-3 border border-slate-300 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 dark:bg-slate-700 dark:border-slate-600 dark:text-white"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
