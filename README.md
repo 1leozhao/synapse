@@ -1,24 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Synapse Lite
 
-## Getting Started
+A minimal prototype of a swarm-powered AI scientist focused on fresh papers from ArXiv. The system uses a combination of AI agents to analyze, summarize, generate insights, and validate research papers in the fields of AI, Machine Learning, and Statistics.
 
-First, run the development server:
+## Features
 
+- **Papers Tab**: Browse and analyze the latest papers from ArXiv (cs.AI, cs.LG, stat.ML)
+  - Real-time paper fetching and analysis
+  - AI-powered paper summaries and insights
+  - Interactive chat interface for paper discussions
+  
+- **Digests Tab**: Get AI-curated daily digests of research papers
+  - Top 5 most significant papers with explanations
+  - Emerging themes and trends analysis
+  - Interesting outlier papers identification
+  - Daily key takeaways
+
+## Quick Setup
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd synapse
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Create a `.env.local` file in the root directory with your OpenAI API key:
+```
+OPENAI_API_KEY=your_openai_api_key
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Install dependencies and start the development server:
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The application will be available at `http://localhost:3000`.
+
+## Swarm Lifecycle
+
+The Synapse Lite swarm operates through several coordinated AI agents:
+
+1. **Paper Collection Agent**
+   - Fetches latest papers from ArXiv in specified categories
+   - Filters and preprocesses paper metadata
+   - Caches paper content for efficient retrieval
+
+2. **Analysis Agent**
+   - Generates concise paper summaries (350-450 words)
+   - Extracts key topics and techniques
+   - Tags papers with relevant categories
+   - Confidence scoring for validity assessment
+
+3. **Validity Agent**
+   - Analyzes papers for potential issues and inconsistencies
+   - Identifies suspicious claims or methodological concerns
+   - Suggests areas needing further verification
+
+4. **Chat Agent**
+   - Provides interactive paper discussions
+   - Answers questions using paper context
+   - Maintains conversation history
+   - Streams responses in real-time
+
+5. **Digest Agent**
+   - Analyzes papers in batch for daily digests
+   - Identifies significant papers and emerging trends
+   - Highlights cross-disciplinary connections
+   - Generates daily key takeaways
+
+## Known Gaps and Limitations
+
+1. **Paper Processing**
+   - Limited to papers available through ArXiv
+   - PDF parsing can be unreliable for complex mathematical notation
+   - Currently only processes the first 15,000 characters of each paper
+
+2. **Analysis Depth**
+   - Summaries may miss some technical details
+   - Analysis is primarily based on abstract and introduction
+   - Limited cross-referencing between papers
+
+## Technical Stack
+
+- **Frontend**: Next.js 15.3.2, React 19, TailwindCSS
+- **AI**: OpenAI GPT-4 Turbo (digests), GPT-3.5 Turbo (chat, summaries)
+- **APIs**: ArXiv, OpenAI
+- **Development**: TypeScript, ESLint, Turbopack
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
 
 ## Learn More
 
